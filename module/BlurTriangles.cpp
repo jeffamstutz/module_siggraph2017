@@ -152,7 +152,7 @@ namespace ospray {
         this->normal.push_back((float*)normalData->data + t*numVerts*numCompsInNor);
     }
 
-    eMesh = rtcNewBlurTriangles(embreeSceneHandle,RTC_GEOMETRY_STATIC,
+    eMesh = rtcNewTriangleMesh(embreeSceneHandle,RTC_GEOMETRY_STATIC,
                                numTris,numVerts,numTimeSteps);
 
     for (int t = 0; t < numTimeSteps; t++)

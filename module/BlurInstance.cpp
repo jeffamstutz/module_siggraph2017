@@ -18,7 +18,7 @@
 
 // ospray
 #include "BlurInstance.h"
-#include "common/Model.h"
+#include "../../ospray/common/Model.h"
 // ispc exports
 #include "BlurInstance_ispc.h"
 
@@ -67,7 +67,7 @@ namespace ospray {
       instancedScene->commit();
     }
 
-    embreeGeomID = rtcNewBlurInstance2(model->embreeSceneHandle,
+    embreeGeomID = rtcNewInstance2(model->embreeSceneHandle,
                                    instancedScene->embreeSceneHandle,
                                    numTimeSteps);
 

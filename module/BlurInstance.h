@@ -16,8 +16,8 @@
 
 #pragma once
 
-#include "Geometry.h"
-#include "common/Data.h"
+#include "../../ospray/geometry/Geometry.h"
+#include "../../ospray/common/Data.h"
 
 namespace ospray {
 
@@ -46,8 +46,8 @@ namespace ospray {
    */
   struct OSPRAY_SDK_INTERFACE BlurInstance : public Geometry
   {
-    Instance();
-    virtual ~Instance() = default;
+    BlurInstance();
+    virtual ~BlurInstance() = default;
     virtual std::string toString() const override;
     virtual void finalize(Model *model) override;
 

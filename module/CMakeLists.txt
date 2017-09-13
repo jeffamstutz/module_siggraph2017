@@ -14,11 +14,12 @@
 ## limitations under the License.                                           ##
 ## ======================================================================== ##
 
-option(OSPRAY_MODULE_SIGGRAPH2017 "Build SIGGRAPH 2017 Demo" OFF)
-
-if (OSPRAY_MODULE_SIGGRAPH2017)
-
-  add_subdirectory(module)
-  add_subdirectory(viewer)
-
-endif (OSPRAY_MODULE_SIGGRAPH2017)
+ospray_create_library(ospray_module_siggraph
+  BlurInstance.cpp
+  BlurInstance.ispc
+  BlurTriangles.cpp
+  BlurTriangles.ispc
+LINK
+  ospray
+  ospray_common
+)

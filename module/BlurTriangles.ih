@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "Geometry.ih"
+#include "../../ospray/geometry/Geometry.ih"
 
 //! ispc-equivalent of the ospray::BlurTriangles geometry
 struct BlurTriangles {

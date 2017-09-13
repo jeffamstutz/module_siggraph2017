@@ -16,8 +16,8 @@
 
 #pragma once
 
-#include "Geometry.h"
-#include "common/Data.h"
+#include "../../ospray/geometry/Geometry.h"
+#include "../../ospray/common/Data.h"
 
 namespace ospray {
 
