@@ -391,7 +391,6 @@ namespace commandline {
   {
     sceneBounds = empty;
 
-    #if 0
     for (const auto& object : scene->objects)
     {
       box3f objectBounds = empty;
@@ -449,18 +448,18 @@ namespace commandline {
         }
         else
         {
+    #if 0
           for (const std::vector<affine3f>& animatedTransforms : object->animatedTransforms)
           {
             cpp::Geometry ospInstance = ospNewInstance2(ospModel.handle(), (osp::affine3f*)animatedTransforms.data(), animatedTransforms.size());
-            //cpp::Geometry ospInstance = ospNewInstance2(ospModel.handle(), (osp::affine3f*)animatedTransforms.data(), 1);
             sceneModel.addGeometry(ospInstance);
             for (const affine3f& transform : animatedTransforms)
               sceneBounds.extend(computeInstanceBounds(objectBounds, transform));
           }
+    #endif
         }
       }
     }
-    #endif
   }
 
   cpp::Geometry DemoSceneParser::createOspTriangleMesh(const std::shared_ptr<TriangleMesh>& mesh)

@@ -15,7 +15,7 @@
 // ======================================================================== //
 
 // ospray
-#include "TriangleMesh.ih"
+#include "BlurTriangles.ih"
 #include "common/Model.ih"
 #include "math/LinearSpace.ih"
 #include "math/sampling.ih"
@@ -117,13 +117,13 @@ __define_gather_vec3_stride(int, i);
 __define_gather_vec3_stride_varying(float, f);
 __define_gather_vec3_stride_varying(int, i);
 
-static void TriangleMesh_postIntersect(uniform Geometry *uniform _self,
+static void BlurTriangles_postIntersect(uniform Geometry *uniform _self,
                                        uniform Model    *uniform model,
                                        varying DifferentialGeometry &dg,
                                        const varying Ray &ray,
                                        uniform int64 flags)
 {
-  TriangleMesh *uniform self = (TriangleMesh *uniform)_self;
+  BlurTriangles *uniform self = (BlurTriangles *uniform)_self;
   dg.Ng = dg.Ns = ray.Ng;
   const uniform bool huge_mesh = self->huge_mesh;
   const vec3i index = gather_vec3i(huge_mesh, self->index, self->idxSize, ray.primID);
@@ -246,7 +246,7 @@ static void TriangleMesh_postIntersect(uniform Geometry *uniform _self,
   }
 }
 
-SampleAreaRes TriangleMesh_sampleArea(
+SampleAreaRes BlurTriangles_sampleArea(
     const Geometry *uniform const _self
     , const int32 primID
     , const uniform affine3f &xfm
@@ -254,7 +254,7 @@ SampleAreaRes TriangleMesh_sampleArea(
     , const vec2f& s
     )
 {
-  const TriangleMesh *const uniform self = (const TriangleMesh *uniform)_self;
+  const BlurTriangles *const uniform self = (const BlurTriangles *uniform)_self;
   SampleAreaRes res;
 
   // gather vertices
@@ -276,13 +276,13 @@ SampleAreaRes TriangleMesh_sampleArea(
   return res;
 }
 
-void TriangleMesh_getAreas(
+void BlurTriangles_getAreas(
     const Geometry *const uniform _self
     , const uniform affine3f &xfm
     , float *const uniform area
     )
 {
-  TriangleMesh *uniform self = (TriangleMesh *uniform)_self;
+  BlurTriangles *uniform self = (BlurTriangles *uniform)_self;
 
   const uniform int32 tris = self->super.primitives;
   int *uniform index = self->index;
@@ -301,8 +301,8 @@ void TriangleMesh_getAreas(
 }
 
 
-//! constructor for ispc-side TriangleMesh object
-void TriangleMesh_Constructor(uniform TriangleMesh *uniform mesh,
+//! constructor for ispc-side BlurTriangles object
+void BlurTriangles_Constructor(uniform BlurTriangles *uniform mesh,
                               void *uniform cppEquivalent,
                               uniform Model *uniform model,
                               uniform int32  geomID,
@@ -324,11 +324,11 @@ void TriangleMesh_Constructor(uniform TriangleMesh *uniform mesh,
                               uniform bool huge_mesh)
 {
   Geometry_Constructor(&mesh->super,cppEquivalent,
-                       TriangleMesh_postIntersect,
+                       BlurTriangles_postIntersect,
                        model,geomID,
                        material);
-  mesh->super.getAreas = TriangleMesh_getAreas;
-  mesh->super.sampleArea = TriangleMesh_sampleArea;
+  mesh->super.getAreas = BlurTriangles_getAreas;
+  mesh->super.sampleArea = BlurTriangles_sampleArea;
   mesh->super.primitives = numTriangles;
   mesh->numTimeSteps = numTimeSteps;
   mesh->index        = index;
@@ -346,15 +346,15 @@ void TriangleMesh_Constructor(uniform TriangleMesh *uniform mesh,
   mesh->huge_mesh = huge_mesh;
 }
 
-export void *uniform TriangleMesh_create(void *uniform cppEquivalent)
+export void *uniform BlurTriangles_create(void *uniform cppEquivalent)
 {
-  TriangleMesh *uniform mesh = uniform new TriangleMesh;
-  TriangleMesh_Constructor(mesh, cppEquivalent,
+  BlurTriangles *uniform mesh = uniform new BlurTriangles;
+  BlurTriangles_Constructor(mesh, cppEquivalent,
                            NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, -1, NULL, NULL, NULL, true, false);
   return mesh;
 }
 
-export void *uniform TriangleMesh_set(void *uniform _mesh,
+export void *uniform BlurTriangles_set(void *uniform _mesh,
                                       void *uniform _model,
                                       uniform int32  geomID,
                                       uniform int32  numTriangles,
@@ -374,10 +374,10 @@ export void *uniform TriangleMesh_set(void *uniform _mesh,
                                       uniform bool has_alpha,
                                       uniform bool huge_mesh)
 {
-  uniform TriangleMesh *uniform mesh = (uniform TriangleMesh *uniform)_mesh;
+  uniform BlurTriangles *uniform mesh = (uniform BlurTriangles *uniform)_mesh;
   uniform Model *uniform model = (uniform Model *uniform)_model;
   uniform Material *uniform *uniform materialList = (uniform Material *uniform *uniform)_materialList;
-  TriangleMesh_Constructor(mesh,
+  BlurTriangles_Constructor(mesh,
                            mesh->super.cppEquivalent,
                            model,
                            geomID,

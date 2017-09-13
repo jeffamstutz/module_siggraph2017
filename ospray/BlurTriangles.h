@@ -44,7 +44,7 @@ namespace ospray {
     </pre>
 
     The functionality for this geometry is implemented via the
-    \ref ospray::TriangleMesh class.
+    \ref ospray::BlurTriangles class.
   */
 
 
@@ -69,10 +69,10 @@ namespace ospray {
       - a 'prim.materialID' array (Data<uint32> type), indexing into
       - a 'materialList' array (holding the OSPMaterial pointers)
    */
-  struct OSPRAY_SDK_INTERFACE TriangleMesh : public Geometry
+  struct OSPRAY_SDK_INTERFACE BlurTriangles : public Geometry
   {
-    TriangleMesh();
-    virtual ~TriangleMesh() = default;
+    BlurTriangles();
+    virtual ~BlurTriangles() = default;
     virtual std::string toString() const override;
     virtual void finalize(Model *model) override;
 

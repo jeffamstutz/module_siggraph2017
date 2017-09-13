@@ -15,11 +15,11 @@
 // ======================================================================== //
 
 // ospray
-#include "TriangleMesh.h"
+#include "BlurTriangles.h"
 #include "common/Model.h"
 #include "../include/ospray/ospray.h"
 // ispc exports
-#include "TriangleMesh_ispc.h"
+#include "BlurTriangles_ispc.h"
 #include <cmath>
 
 #define RTC_INVALID_ID RTC_INVALID_GEOMETRY_ID
@@ -31,19 +31,19 @@ namespace ospray {
     return i >= i0 && i < i1;
   }
 
-  TriangleMesh::TriangleMesh()
+  BlurTriangles::BlurTriangles()
     : eMesh(RTC_INVALID_ID)
   {
     this->ispcMaterialPtrs = nullptr;
-    this->ispcEquivalent = ispc::TriangleMesh_create(this);
+    this->ispcEquivalent = ispc::BlurTriangles_create(this);
   }
 
-  std::string TriangleMesh::toString() const
+  std::string BlurTriangles::toString() const
   {
-    return "ospray::TriangleMesh";
+    return "ospray::BlurTriangles";
   }
 
-  void TriangleMesh::finalize(Model *model)
+  void BlurTriangles::finalize(Model *model)
   {
     static int numPrints = 0;
     numPrints++;
@@ -152,7 +152,7 @@ namespace ospray {
         this->normal.push_back((float*)normalData->data + t*numVerts*numCompsInNor);
     }
 
-    eMesh = rtcNewTriangleMesh(embreeSceneHandle,RTC_GEOMETRY_STATIC,
+    eMesh = rtcNewBlurTriangles(embreeSceneHandle,RTC_GEOMETRY_STATIC,
                                numTris,numVerts,numTimeSteps);
 
     for (int t = 0; t < numTimeSteps; t++)
@@ -179,7 +179,7 @@ namespace ospray {
                        << "  mesh bounds " << bounds;
     }
 
-    ispc::TriangleMesh_set(getIE(),model->getIE(),eMesh,
+    ispc::BlurTriangles_set(getIE(),model->getIE(),eMesh,
                            numTris,
                            numTimeSteps,
                            numCompsInTri,
@@ -198,7 +198,7 @@ namespace ospray {
                            huge_mesh);
   }
 
-  OSP_REGISTER_GEOMETRY(TriangleMesh,triangles);
-  OSP_REGISTER_GEOMETRY(TriangleMesh,trianglemesh);
+  OSP_REGISTER_GEOMETRY(BlurTriangles,triangles);
+  OSP_REGISTER_GEOMETRY(BlurTriangles,trianglemesh);
 
 } // ::ospray

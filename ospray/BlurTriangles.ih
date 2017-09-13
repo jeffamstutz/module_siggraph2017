@@ -18,8 +18,8 @@
 
 #include "Geometry.ih"
 
-//! ispc-equivalent of the ospray::TriangleMesh geometry
-struct TriangleMesh {
+//! ispc-equivalent of the ospray::BlurTriangles geometry
+struct BlurTriangles {
   Geometry  super; //!< inherited geometry fields
   int32     numTimeSteps; //!< number of time steps
   int32     idxSize; //!< stride of triangle indices, in int32 elements
