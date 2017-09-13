@@ -22,4 +22,6 @@ endif()
 # Build ospImGui utilities
 ##############################################################
 
+add_subdirectory(commandline)
+add_subdirectory(miniSG)
 add_subdirectory(util)

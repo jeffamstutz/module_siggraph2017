@@ -20,7 +20,7 @@
 #include <mutex>
 
 // mini scene graph for loading the model
-#include "../../common/miniSG/miniSG.h"
+#include "../common/miniSG/miniSG.h"
 
 #include "ospray/ospray_cpp/Camera.h"
 #include "ospray/ospray_cpp/Model.h"
