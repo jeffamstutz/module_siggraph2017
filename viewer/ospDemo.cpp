@@ -32,57 +32,6 @@ namespace exampleViewer {
   ospcommon::vec3f scale;
   bool lockFirstFrame = false;
   bool fullscreen = false;
-  std::string displayWall = "";
-
-  namespace dw {
-
-    struct ServiceInfo {
-      /* constructor that initializes everything to default values */
-      ServiceInfo()
-        : totalPixelsInWall(-1,-1),
-          mpiPortName("<value not set>")
-      {}
-
-      /*! total pixels in the entire display wall, across all
-        indvididual displays, and including bezels (future versios
-        will allow to render to smaller resolutions, too - and have
-        the clients upscale this - but for now the client(s) have to
-        render at exactly this resolution */
-      ospcommon::vec2i totalPixelsInWall;
-
-      /*! the MPI port name that the service is listening on client
-        connections for (ie, the one to use with
-        client::establishConnection) */
-      std::string mpiPortName;
-
-      /*! whether this runs in stereo mode */
-      int stereo;
-
-      /*! read a service info from a given hostName:port. The service
-        has to already be running on that port
-
-        Note this may throw a std::runtime_error if the connection
-        cannot be established
-      */
-      void getFrom(const std::string &hostName,
-                   const int portNo);
-    };
-    /*! read a service info from a given hostName:port. The service
-      has to already be running on that port */
-    void ServiceInfo::getFrom(const std::string &hostName,
-                              const int portNo)
-    {
-      ospcommon::socket_t sock = ospcommon::connect(hostName.c_str(),portNo);
-      if (!sock)
-        throw std::runtime_error("could not create display wall connection!");
-
-      mpiPortName = read_string(sock);
-      totalPixelsInWall.x = read_int(sock);
-      totalPixelsInWall.y = read_int(sock);
-      stereo = read_int(sock);
-      close(sock);
-    }
-  }
 
   void parseExtraParametersFromComandLine(int ac, const char **&av)
   {
@@ -92,8 +41,6 @@ namespace exampleViewer {
         translate.x = atof(av[++i]);
         translate.y = atof(av[++i]);
         translate.z = atof(av[++i]);
-      } else if (arg == "--display-wall" || arg == "-dw") {
-        displayWall = av[++i];
       } else if (arg == "--scale") {
         scale.x = atof(av[++i]);
         scale.y = atof(av[++i]);
@@ -127,8 +74,7 @@ namespace exampleViewer {
 
     ospray::imgui3D::init(&ac,av);
 
-    //auto ospObjs = parseWithDefaultParsersDW(ac, av);
-    auto ospObjs = parseCommandLineDW<DefaultRendererParser, DefaultCameraParser,
+    auto ospObjs = parseCommandLine<DefaultRendererParser, DefaultCameraParser,
       DemoSceneParser, DefaultLightsParser>(ac, av);
 
     std::deque<ospcommon::box3f>   bbox;
@@ -138,39 +84,11 @@ namespace exampleViewer {
     ospray::cpp::Camera   camera;
     ospray::cpp::FrameBuffer frameBufferDW;
 
-    std::tie(bbox, model, renderer, rendererDW, camera) = ospObjs;
+    std::tie(bbox, model, renderer, camera) = ospObjs;
 
     parseExtraParametersFromComandLine(ac, av);
 
-    if (displayWall != "") {
-      std::cout << "#############################################" << std::endl;
-      std::cout << "found --display-wall cmdline argument ...." << std::endl;
-      std::cout << "trying to connect to display wall service on "
-                << displayWall << ":2903" << std::endl;
-
-      dw::ServiceInfo dwService;
-      dwService.getFrom(displayWall,2903);
-      std::cout << "found display wall service on MPI port "
-                << dwService.mpiPortName << std::endl;
-      std::cout << "#############################################" << std::endl;
-      frameBufferDW = ospray::cpp::FrameBuffer(dwService.totalPixelsInWall,
-                                               (OSPFrameBufferFormat)OSP_FB_NONE,
-                                               OSP_FB_COLOR|OSP_FB_ACCUM);
-
-      ospLoadModule("displayWald");
-      OSPPixelOp pixelOp = ospNewPixelOp("display_wald");
-      ospSetString(pixelOp,"streamName",dwService.mpiPortName.c_str());
-      ospCommit(pixelOp);
-      ospSetPixelOp(frameBufferDW.handle(),pixelOp);
-      rendererDW.set("frameBuffer", frameBufferDW.handle());
-      rendererDW.commit();
-    } else {
-      // no diplay wall - nix the display wall renderer
-      rendererDW = ospray::cpp::Renderer();
-    }
-
-    ospray::ImGuiViewer window(bbox, model, renderer, rendererDW,
-                               frameBufferDW, camera);
+    ospray::ImGuiViewer window(bbox, model, renderer, camera);
     window.setScale(scale);
     window.setLockFirstAnimationFrame(lockFirstFrame);
     window.setTranslation(translate);
