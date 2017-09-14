@@ -108,9 +108,6 @@ namespace ospray {
 
     float aoDistance {1e20f};
 
-    float toneGain {1.0f};
-    float toneBurn {0.0f};
-
     AsyncRenderEngine renderEngine;
     std::vector<uint32_t> pixelBuffer;
   };

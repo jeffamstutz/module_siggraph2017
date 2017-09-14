@@ -102,7 +102,7 @@ namespace ospray {
     renderEngine.stop();
   }
 
-  void ImGuiViewer::setRenderer(OSPRenderer renderer, 
+  void ImGuiViewer::setRenderer(OSPRenderer renderer,
                                 OSPRenderer rendererDW,
                                 OSPFrameBuffer frameBufferDW)
   {
@@ -222,7 +222,7 @@ namespace ospray {
     renderingPaused ? renderEngine.stop() : renderEngine.start();
   }
 
-  void ImGuiViewer::setWorldBounds(const box3f &worldBounds) 
+  void ImGuiViewer::setWorldBounds(const box3f &worldBounds)
   {
     ImGui3DWidget::setWorldBounds(worldBounds);
     aoDistance = (worldBounds.upper.x - worldBounds.lower.x)/4.f;
@@ -484,20 +484,6 @@ namespace ospray {
       if (ImGui::SliderFloat("time", &time, 0.0f, 1.0f)) {
         viewPort.shutter = vec2f(time);
         viewPort.modified = true;
-      }
-
-      if (ImGui::InputFloat("toneGain", &toneGain)) {
-        renderer.set("toneGain", toneGain);
-        if (rendererDW)
-          rendererDW.set("toneGain", toneGain);
-        renderer_changed = true;
-      }
-
-      if (ImGui::InputFloat("toneBurn", &toneBurn)) {
-        renderer.set("toneBurn", toneBurn);
-        if (rendererDW)
-          rendererDW.set("toneBurn", toneBurn);
-        renderer_changed = true;
       }
 
       if (renderer_changed) {
