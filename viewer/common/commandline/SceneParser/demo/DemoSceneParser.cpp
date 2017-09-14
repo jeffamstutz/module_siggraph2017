@@ -200,7 +200,8 @@ namespace commandline {
       object->animatedTransforms.push_back(transforms);
   }
 
-  std::shared_ptr<DemoSceneParser::TriangleMesh> DemoSceneParser::parseTriangleMesh(const ospray::xml::Node& node)
+  std::shared_ptr<DemoSceneParser::TriangleMesh>
+  DemoSceneParser::parseTriangleMesh(const ospray::xml::Node& node)
   {
     std::shared_ptr<TriangleMesh> mesh = std::make_shared<TriangleMesh>();
     mesh->material = defaultMaterial;
@@ -462,7 +463,9 @@ namespace commandline {
     }
   }
 
-  cpp::Geometry DemoSceneParser::createOspTriangleMesh(const std::shared_ptr<TriangleMesh>& mesh)
+  cpp::Geometry DemoSceneParser::createOspTriangleMesh(
+    const std::shared_ptr<TriangleMesh>& mesh
+  )
   {
     bool istrain = true;
     ospray::cpp::Material pusher_material = nullptr;
@@ -475,7 +478,7 @@ namespace commandline {
       wheel_material = materialMap["train_wheel"];
     istrain &= mesh->material.object() != wheel_material.object();
 
-    cpp::Geometry ospGeometry("triangles");
+    cpp::Geometry ospGeometry("blur_triangles");
 
     OSPData ospIndex = ospNewData(mesh->numTriangles, OSP_INT3, mesh->triangles);
     ospGeometry.set("index", ospIndex);
@@ -488,7 +491,6 @@ namespace commandline {
     /* forces the train to two time steps only */
     else if (istrain)
     {
-#if 1
       size_t t0 = 0, t1 = mesh->animatedPositions.size()-1;
       std::vector<vec3f> buffer(2 * mesh->numPositions);
       for (size_t i = 0; i < mesh->numPositions; i++)
@@ -499,21 +501,6 @@ namespace commandline {
       OSPData ospPosition = ospNewData(2 * mesh->numPositions, OSP_FLOAT3, buffer.data());
       ospGeometry.set("position", ospPosition);
       ospGeometry.set("positionTimeSteps", 2);
-#else
-      size_t numTimeSteps = mesh->animatedPositions.size();
-      size_t numTimeStepsOut = (numTimeSteps-1)/4+1;
-      std::vector<vec3f> buffer(numTimeStepsOut * mesh->numPositions);
-      for (size_t t = 0; t < numTimeStepsOut; t++)
-      {
-        int tin = t*numTimeSteps/numTimeStepsOut;
-        for (size_t i = 0; i < mesh->numPositions; i++)
-          buffer[t*mesh->numPositions + i] = mesh->animatedPositions[tin][i];
-      }
-
-      OSPData ospPosition = ospNewData(numTimeStepsOut * mesh->numPositions, OSP_FLOAT3, buffer.data());
-      ospGeometry.set("position", ospPosition);
-      ospGeometry.set("positionTimeSteps", (int)numTimeStepsOut);
-#endif
     }
     else
     {

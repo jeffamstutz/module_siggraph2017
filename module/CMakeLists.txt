@@ -19,6 +19,7 @@ ospray_create_library(ospray_module_siggraph
   BlurInstance.ispc
   BlurTriangles.cpp
   BlurTriangles.ispc
+  module_init.cpp
 LINK
   ospray
   ospray_common

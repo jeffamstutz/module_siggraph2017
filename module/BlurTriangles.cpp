@@ -198,7 +198,7 @@ namespace ospray {
                            huge_mesh);
   }
 
-  OSP_REGISTER_GEOMETRY(BlurTriangles,triangles);
-  OSP_REGISTER_GEOMETRY(BlurTriangles,trianglemesh);
+  OSP_REGISTER_GEOMETRY(BlurTriangles, blur_triangles);
+  OSP_REGISTER_GEOMETRY(BlurTriangles, blur_trianglemesh);
 
 } // ::ospray
