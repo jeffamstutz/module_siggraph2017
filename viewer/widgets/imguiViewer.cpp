@@ -247,7 +247,8 @@ namespace ospray {
       camera.set("aspect", viewPort.aspect);
       camera.set("fovy", viewPort.openingAngle);
       camera.set("handedness", viewPort.handedness);
-      camera.set("shutter",viewPort.shutter);
+      camera.set("shutterOpen",viewPort.shutter.x);
+      camera.set("shutterClose",viewPort.shutter.y);
 
       viewPort.modified = false;
       renderEngine.scheduleObjectCommit(camera);
