@@ -14,7 +14,7 @@
 ## limitations under the License.                                           ##
 ## ======================================================================== ##
 
-option(OSPRAY_MODULE_SIGGRAPH2017 "Build SIGGRAPH 2017 Demo" OFF)
+option(OSPRAY_MODULE_SIGGRAPH2017 "Build SIGGRAPH 2017 Demo" ON)
 
 if (OSPRAY_MODULE_SIGGRAPH2017)
 
