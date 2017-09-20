@@ -29,7 +29,6 @@ ospray_create_application(ospDemo
   LINK
   ${OPENGL_LIBRARIES}
   ${GLFW_LIBRARY}
-  gl3w
   imgui
   ospray
   ospray_common
