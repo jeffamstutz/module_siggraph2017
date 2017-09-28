@@ -29,9 +29,9 @@ ospray_create_application(ospDemo
   LINK
   ${OPENGL_LIBRARIES}
   ${GLFW_LIBRARY}
-  imgui
   ospray
   ospray_common
   ospray_commandline
+  ospray_imgui
   ospray_imgui3d_nosg
 )
